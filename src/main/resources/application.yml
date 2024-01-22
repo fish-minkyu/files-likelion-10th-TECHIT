@@ -1,0 +1,33 @@
+spring:
+  # 1번. 정적파일들을 어느 URL 경로에서 요청이 오면 어떤 폴더에서 찾아 답변을 줄지 설정
+  mvc:
+    # 어떤 경로에 대한 요청의 응답으로 정적 파일 응답을 할지를 결정하는 설정
+    # 즉, static-path-pattern애서 설정한 경로로 요청이 오면
+    # static 폴더 안에 있는 정적파일들을 찾아 응답을 하는 것이다.
+    # Ex) static-path-pattern: /copyright
+    # 요청: /copyright/assets/images/shark.png
+    # 응답: copyright 경로에 요청이 왔으므로 static 경로에서 해당 요청 경로로 파일을 찾아주자
+    # /**: 복수의 경로를 타는 요청을 의미
+    static-path-pattern: /static/** # 정적 파일들을 어디에서 응답할지 설정
+  web:
+    resources:
+      # 어떤 폴더의 파일을 정적 응답으로 전달할지를 설정
+      # file:media/  : /static이란 요청을 받았을 때, 해당 폴더에 있는 파일을 찾아줘
+      # classpath:/static  : build를 했을 때, classpath를 기준으로 static 폴더 안에 있는 내용을 정적으로 제공해줘
+      static-locations: file:media/, classpath:/static
+
+
+
+  datasource:
+    url: jdbc:sqlite:db.sqlite
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    # 최초 실행 후 여기부터 아래까지 주석
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
