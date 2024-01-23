@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -36,32 +37,74 @@ public class UserService {
 
   // READ USER BY USERNAME
   public UserDto readUserByUsername(String username) {
-    User user = repository.findUserByUsername(username);
+    Optional<User> optionalUser = repository.findByUsername(username);
 
-    return UserDto.fromEntity(user);
+    // username이 없으면 not found
+    if (optionalUser.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    return UserDto.fromEntity(optionalUser.get());
+
+/*    return repository.findByUsername(username)
+      .map(UserDto::fromEntity)
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));*/
   }
 
   // UPDATE USER AVATAR
   // 회원 프로필 아이콘 업데이트
-  public UserDto updateUserAvatar(Long id, MultipartFile image) throws IOException {
-    // id에 맞는 User 객체 불러오기
+  public UserDto updateUserAvatar(Long id, MultipartFile image) {
+    // 1. 유저 존재 확인
     Optional<User> optionalUser = repository.findById(id);
 
     // 해당 id의 Optional<User>이 없다면 에러 반환
     if (optionalUser.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    User user = optionalUser.get();
+    // 2. 파일을 어디에 업로드 할건지 결정
+    // 어떻게 하면 이미지 파일명들을 겹치지 않게 저장할 수 있을까?
+    // media/{id}/profile.{확장자}
+    // 2-1. (없다면) 폴더를 만들어야 한다. ()
+    String profileDir = String.format("media/%d/", id);
+    log.info(profileDir);
+    // IOException 방지
+    try {
+      // 주어진 Path를 기준으로, 없는 모든 디렉토리를 생성하는 메서드
+      Files.createDirectories(Path.of(profileDir));
+    } catch (IOException e) {
+      // 폴더를 만드는데 실패하면 기록을 하고 사용자에게 알림
+      log.error(e.getMessage());
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
-    // 어플리케이션 폴더에 저장
-    Path downloadPath = Path.of("media/" + image.getOriginalFilename());
-    image.transferTo(downloadPath);
+    // 2-2. 실제 파일 이름을 경로와 확장자를 포함하여 만들기 ("profile.{png}")
+    String originalFilename = image.getOriginalFilename();
+    // "whale.png" -> {"whale", "png"}
+    String[] fileNameSplit = originalFilename.split("\\.");
+    // "blue.whale.png" -> {"blue", "whale", "png"}
+    String extension = fileNameSplit[fileNameSplit.length -1];
+    String profileFilename = "profile." + extension;
 
-    // 프로필 아이콘 업데이트
-    user.setAvatar(downloadPath.toString());
+    String profilePath = profileDir + profileFilename;
+    log.info(profilePath);
 
-    // 저장 후 UserDto로 변환해서 응답
-    return UserDto.fromEntity(repository.save(user));
+    // 3. 실제로 해당 위치에 저장
+    try {
+      image.transferTo(Path.of(profilePath));
+    } catch (IOException e) {
+      log.error(e.getMessage());
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // 4. User에 아바타 위치를 저장
+    // http://localhost:8080/static/{id}/profile.{확장자}
+    String requestPath = String.format("/static/%d/%s", id, profileFilename);
+    log.info(requestPath);
+    User target = optionalUser.get();
+    target.setAvatar(requestPath);
+
+    // 5. 응답하기
+    return UserDto.fromEntity(repository.save(target));
   }
 }

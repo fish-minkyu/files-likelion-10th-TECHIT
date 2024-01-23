@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
+  // id를 사용자에게 넘겨주고 싶지 않다면 지우면 됨
   private Long id;
   private String username;
   private String email;

@@ -1,9 +1,6 @@
 package com.example.contents.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +13,7 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  // @Column(unique = true), 사용한다면 create 시, 유일한 값인지 확인해줘야 한다.
   private String username;
   private String email;
   @Setter

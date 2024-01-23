@@ -10,7 +10,7 @@ import java.io.IOException;
 
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
   private final UserService service;
@@ -36,9 +36,9 @@ public class UserController {
   @PutMapping("/{userId}/avatar")
   public UserDto avatar(
     @PathVariable("userId") Long userId,
-    @RequestParam("file") MultipartFile image
+    @RequestParam("image") MultipartFile imageFile
     ) throws IOException {
 
-    return service.updateUserAvatar(userId, image);
+    return service.updateUserAvatar(userId, imageFile);
   }
 }
