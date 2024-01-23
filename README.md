@@ -1,10 +1,14 @@
-# File Handling
+# File Handling & Validation(Error Handling)
 
-- 2024.01.22 `10주차`
+- 2024.01.22 ~ 01.23`10주차`
 
 이미지 업로드를 연습해보는 프로젝트다.  
 `import java.nio.file.Path;`과 `import org.springframework.web.multipart.MultipartFile;`을  
-import해서 사용되었다.
+import해서 파일 입출력 코드를 구현하였다.
+
+또한, Validation을 통해 에러 핸들링을 해주었다.
+
+(22일과 23일날 수업 내용을 합쳐서 프로젝트 설명란 적어주기)
 
 ## 스택
 

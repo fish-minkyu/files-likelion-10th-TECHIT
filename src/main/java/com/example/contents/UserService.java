@@ -2,6 +2,7 @@ package com.example.contents;
 
 import com.example.contents.dto.UserDto;
 import com.example.contents.entity.User;
+import com.example.contents.exceptions.UsernameExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,14 @@ public class UserService {
   // CREATE USER
   // 회원가입
   public UserDto create(UserDto dto) {
+    // 사용자 생성 전 계정 이름 겹침 확인 후
+    // 확인했을 때 겹칠 경우 400
+    if (repository.existsByUsername(dto.getUsername())) {
+//       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//      throw new IllegalArgumentException("duplicate username");
+      throw new UsernameExistsException();
+    }
+
     // 회원 가입
     User newUser = new User(
       dto.getUsername(),
