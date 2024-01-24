@@ -1,12 +1,12 @@
 package com.example.contents.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
+@Data
 @ToString
 public class ErrorDto {
-  @Setter
   private String message;
 }

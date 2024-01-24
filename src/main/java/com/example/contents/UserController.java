@@ -53,10 +53,10 @@ public class UserController {
     return "illegalArgumentException"; // RequestMapping과 동일하게 사용자에게 응답으로 전달한다.
   }*/
 
-  // 10:48분 ~ 50분 수업 놓침
+
   //IllegalArgumentException <- 이 예외가 발생한 경우
 /*  @ExceptionHandler(IllegalArgumentException.class) // 예외가 발생했을 때 반응해서 응답한다.
-  @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST) // 오로지 예외가 발생했을 때 어떻게 동작할지 정의하는 메서드다.
   public ErrorDto handleIllegalArgument(
     final IllegalArgumentException exception
   ) {

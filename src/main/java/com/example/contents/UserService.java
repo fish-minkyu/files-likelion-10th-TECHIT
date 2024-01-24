@@ -28,8 +28,14 @@ public class UserService {
     // 사용자 생성 전 계정 이름 겹침 확인 후
     // 확인했을 때 겹칠 경우 400
     if (repository.existsByUsername(dto.getUsername())) {
-//       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-//      throw new IllegalArgumentException("duplicate username");
+      // 예외처리 방법 4가지
+      // way1. ResponseStatusException();
+      // throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+      // way2. @ExceptionHandler & way3. @ControllerAdvice
+      // throw new IllegalArgumentException("duplicate username");
+
+      // way4. 커스텀 예외
       throw new UsernameExistsException();
     }
 
@@ -45,6 +51,7 @@ public class UserService {
   }
 
   // READ USER BY USERNAME
+  // 회원 정보 조회
   public UserDto readUserByUsername(String username) {
     Optional<User> optionalUser = repository.findByUsername(username);
 
@@ -74,7 +81,7 @@ public class UserService {
     // 2. 파일을 어디에 업로드 할건지 결정
     // 어떻게 하면 이미지 파일명들을 겹치지 않게 저장할 수 있을까?
     // media/{id}/profile.{확장자}
-    // 2-1. (없다면) 폴더를 만들어야 한다. ()
+    // 2-1. (없다면) 폴더를 만들어야 한다.
     String profileDir = String.format("media/%d/", id);
     log.info(profileDir);
     // IOException 방지

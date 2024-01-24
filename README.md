@@ -1,4 +1,4 @@
-# File Handling & Validation(Error Handling)
+# File Handling & Validation(Exception Handling)
 
 - 2024.01.22 ~ 01.23`10주차`
 - 01.22 File Handling: 이미지 업로드 및 출력

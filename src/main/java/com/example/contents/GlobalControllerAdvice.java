@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 // 전체 application에서 발생하는 모든 에러들을 핸들링할 수 있다.
 
-// Controller는 아니고 예외처리를 위한 ExceptionHandler를 모아놓기 위한 용도로 사용
+// Controller는 아니고 예외처리를 위한 ExceptionHandler를 모아놓기 위한
+// 컨트롤러에게 제안을 하는 Bean이다. (component의 일종으로 Bean이다.)
 @RestControllerAdvice // component 어노테이션이 있으므로 Bean으로 관리 됨
 public class GlobalControllerAdvice {
+  // 예외가 발생했을 때 사용자에게 에러 응답을 보내기 위한 메서드다.
   @ExceptionHandler(IllegalArgumentException.class) // 예외의 일종이면 작동한다.
   public ResponseEntity<ErrorDto> handleIllegalArgument(
     final IllegalArgumentException exception
@@ -26,6 +28,8 @@ public class GlobalControllerAdvice {
       .body(dto);
   }
 
+  // UsernameExistsException 예외를 처리하는 예외 처리 메서드
+/*
   @ExceptionHandler(UsernameExistsException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorDto handleUsernameExists(
@@ -35,10 +39,11 @@ public class GlobalControllerAdvice {
     dto.setMessage(exception.getMessage());
     return dto;
   }
+*/
 
-  // 11:36분 수업 놓침
-  // 11:38 상속 관계 ~~ 제일 큰 장점이다.
-  @ExceptionHandler(Status400Exception.class)
+  // ExceptionHandler를 상속한 부모 예외를 기준으로 받아줄 수 있다.
+  // 상속 관계를 활용해서 서로 다른 400 예외에 대해서 같은 방식으로 예외 처리할 수 있다.
+  @ExceptionHandler(Status400Exception.class) // Status400Exception을 기준으로 한 예외 처리기
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorDto handle400(
     final UsernameExistsException exception
