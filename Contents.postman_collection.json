@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "fe3090da-594e-46a6-97ef-88c70feb21cd",
+		"name": "Contents",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32406604"
+	},
+	"item": [
+		{
+			"name": "mutipart-test",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "path",
+							"value": "jeeho",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/aquashdw/Pictures/assets/car.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/multipart",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"multipart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"edujeeho2\",\n    \"email\": \"edujeeho@gmail.com\",\n    \"phone\": \"01012345678\",\n    \"bio\": \"Blah Blah\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read-user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/edujeeho",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"edujeeho"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-user-avatar",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/Users/aquashdw/Pictures/assets/computer.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/2/avatar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"2",
+						"avatar"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
