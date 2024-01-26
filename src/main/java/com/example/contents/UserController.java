@@ -43,6 +43,8 @@ public class UserController {
     return service.updateUserAvatar(userId, imageFile);
   }
 
+  // TODO 이 부분 다시 듣기 - ExceptionHandler
+  // A. String 반환, 에러 발생 시, 상태코드는 200으로 응답
   // 컨트롤러 단위에서 예외처리를 하고 싶은 경우
   // UserController에서 에러를 잡아서 컨트롤을 해준다.
 /*  @ExceptionHandler(IllegalArgumentException.class) // 발생한 에러를 인자로
@@ -54,8 +56,10 @@ public class UserController {
   }*/
 
 
+  // B. A + @ResponseStatus + dto 반환
   //IllegalArgumentException <- 이 예외가 발생한 경우
-/*  @ExceptionHandler(IllegalArgumentException.class) // 예외가 발생했을 때 반응해서 응답한다.
+/*
+  @ExceptionHandler(IllegalArgumentException.class) // 예외가 발생했을 때 반응해서 응답한다.
   @ResponseStatus(code = HttpStatus.BAD_REQUEST) // 오로지 예외가 발생했을 때 어떻게 동작할지 정의하는 메서드다.
   public ErrorDto handleIllegalArgument(
     final IllegalArgumentException exception

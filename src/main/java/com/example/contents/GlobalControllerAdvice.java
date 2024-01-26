@@ -29,6 +29,7 @@ public class GlobalControllerAdvice {
   }
 
   // UsernameExistsException 예외를 처리하는 예외 처리 메서드
+  // ( @ExceptionHandler(Status400Exception.class)으로 바꿈! )
 /*
   @ExceptionHandler(UsernameExistsException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
