@@ -43,7 +43,6 @@ public class UserController {
     return service.updateUserAvatar(userId, imageFile);
   }
 
-  // TODO 이 부분 다시 듣기 - ExceptionHandler
   // A. String 반환, 에러 발생 시, 상태코드는 200으로 응답
   // 컨트롤러 단위에서 예외처리를 하고 싶은 경우
   // UserController에서 에러를 잡아서 컨트롤을 해준다.
