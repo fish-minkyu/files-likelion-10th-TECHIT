@@ -23,7 +23,7 @@ spring:
       # : build를 했을 때, classpath를 기준으로 static 폴더 안에 있는 내용을 정적으로 제공해줘
       static-locations: file:media/, classpath:/static
 
-      # 즉, /static/** 경로를 통해 요청이 들어오면, file:media/ or classpath:/static 안에 똑같은 경로의 파일을
+      # 즉, /static/** 경로를 통해 요청이 들어오면, file:media/ 또는 classpath:/static 안에 똑같은 경로의 파일을
       # 찾아서 응답해주란 의미다.
 
       # 먼저 file:media/ 가 앞에 있으므로 우선적으로 파일을 찾아본다.

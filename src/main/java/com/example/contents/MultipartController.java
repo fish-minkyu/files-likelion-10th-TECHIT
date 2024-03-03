@@ -36,7 +36,7 @@ public class MultipartController {
     // 2번. 사용자가 이미지 저장 요청 시, 정해진 경로에 저장해둔다.
     // 업로드한 파일명을 그대로 사용하고 싶을 때
     log.info(multipartFile.getOriginalFilename());
-    // TODO 폴더가 없을 때 만들기, 폴더가 없을 때 발생하는 500 에러 방지
+    // TODO 폴더가 없을 때 만들기, 폴더가 없을 때 발생하는 500 에러 방지 (UserService - updateUserAvatar 메소드 참고)
 
     // 파일을 저장할 경로 + 파일명 지정
     // Path란 객체가 실행했을 때의 디렉토리를 기준으로 상대 경로로 위치를 지정한다.

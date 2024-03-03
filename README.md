@@ -1,8 +1,22 @@
 # File Handling & Validation(Exception Handling)
 
 - 2024.01.22 ~ 01.23`10주차`
-- 01.22 File Handling: 이미지 업로드 및 출력
-- 01.23 Validation
+- 01.22 - File Handling: 이미지 업로드 및 출력
+- 01.23 - File Handling(2교시까지) & Validation
+
+<details>
+<summary><strong>1월 22일 사용 Page</strong></summary>
+
+- File Handling
+<div>MultipartController: 이미지 저장</div>
+<div>User: 유저 정보 저장</div>
+<div>UserRepository: JPA와 DB 연결</div>
+<div>UserDto</div>
+<div>UserService: 이미지 저장 + 파일 없으면 파일 생성</div>
+<div>UserController</div>
+
+</details>
+
 
 `1월 22일`, 이미지 업로드를 연습해보았다.  
 `java.nio.file.Path;`과 `org.springframework.web.multipart.MultipartFile;`을   
@@ -14,7 +28,26 @@ import해서 파일 입출력 코드를 구현하였다.
 2. 사용자가 파일 저장 요청 시, 저장하는 경로 지정
 3. 사용자에게 저장된 이미지 응답
 
-\
+<hr>
+<details>
+<summary><strong>1월 23일 사용 Page</strong></summary>
+
+- File Handling
+<div>User: 유저 정보 저장</div>
+<div>UserRepository: JPA와 DB 연결</div>
+<div>UserDto</div>
+<div>UserService: 이미지 저장 + 파일 없으면 파일 생성</div>
+<div>UserController</div>
+
+- Validation
+<div>UserController</div>
+<div>GlobalControllerAdvice</div>
+<div>ErrorDto</div>
+<div>Status400Exception</div>
+<div>UsernameExistsException</div>
+
+</details>
+
 `1월 23일`, Validation 중에서 `예외 처리(Exception Handling)`을 학습했다.  
 예외 처리를 할 수 있는 방법 총 4가지를 하였다.  
 1. `thorow new ResponseStatusException();`  
@@ -40,13 +73,19 @@ ResponseStatusException()보다 더 정교하게 예외를 처리할 수 있다.
 - SQLite
 
 ## Key Point
+
 `01/22`
-### 이미지 업로드 & 반환 3단계
+
+<details>
+<summary><strong> File Handling Key Point</strong></summary>
+
+`이미지 업로드 & 반환 3단계`
 
 1. application.yaml 설정
 - 정적 파일 요청 URL 경로 설정
 - 정적 파일 응답 폴더 설정
-[이미지 설정](/src/main/resources/application.yml)
+
+[application.yaml](/src/main/resources/application.yml)
 ```yaml
 spring:
   # 1번. 정적파일들을 어느 URL 경로에서 요청이 오면 어떤 폴더에서 찾아 답변을 줄지 설정
@@ -67,8 +106,8 @@ spring:
       static-locations: file:media/, classpath:/static
 ```
 
-2. 사용자가 파일 저장 요청 시, 저장하는 경로 지정 & 3. 사용자에게 저장된 이미지 응답
-[이미지 저장 & 이미지 응답](/src/main/java/com/example/contents/MultipartController.java)
+2. 사용자가 파일 저장 요청 시, 저장하는 경로 지정
+   [MultipartController](/src/main/java/com/example/contents/MultipartController.java)
 
 ```java
  @PostMapping(
@@ -103,10 +142,104 @@ spring:
   }
 ```
 
----
+3. 사용자에게 저장된 이미지 응답
+```java
+@PostMapping(
+    value = "/multipart",
+    consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+  )
+  public String multipart(
+    // 파일을 받을 때는 HTML의 form의 형태로 받을 것이며
+    // 인자 하나 하나가 분리되어서 서버로 들어올 것이다.
+    // Body 자체를 한번에 해석해서 서버로 도달하지 않는다.
+    // @RequestBody보단 @RequestParam을 써야한다는 결론이 도출된다.
+    @RequestParam("name")
+    String name,
+    // 받아주는 자료형을 MultipartFile
+    @RequestParam("file")
+    MultipartFile multipartFile
+  ) throws IOException {
+    // ...
+  
+    // 3번. 어떻게 해당 파일을 다시 받아갈 수 있는지 응답해주기
+    return "http://localhost:8080/static/" + multipartFile.getOriginalFilename();
+  }
+```
+
+`유저 프로필 이미지 설정`
+
+4. 유저 프로필 이미지 저장(파일이 없다면 만들기 & 파일명 겹치지 않게 설정)  
+   [UserService](/src/main/java/com/example/contents/UserService.java)
+- updateUserAvatar 메소드
+```java
+  // UPDATE USER AVATAR
+  // 회원 프로필 아이콘 업데이트
+  public UserDto updateUserAvatar(Long id, MultipartFile image) {
+    // 1. 유저 존재 확인
+    Optional<User> optionalUser = repository.findById(id);
+
+    // 해당 id의 Optional<User>이 없다면 에러 반환
+    if (optionalUser.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    // 2. 파일을 어디에 업로드 할건지 결정
+    // 어떻게 하면 이미지 파일명들을 겹치지 않게 저장할 수 있을까?
+    // media/{id}/profile.{확장자}
+    // 2-1. (없다면) 폴더를 만들어야 한다.
+    String profileDir = String.format("media/%d/", id);
+    log.info(profileDir);
+    // IOException 방지
+    try {
+      // 주어진 Path를 기준으로, 없는 모든 디렉토리를 생성하는 메서드
+      Files.createDirectories(Path.of(profileDir));
+    } catch (IOException e) {
+      // 폴더를 만드는데 실패하면 기록을 하고 사용자에게 알림
+      log.error(e.getMessage());
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // 2-2. 실제 파일 이름을 경로와 확장자를 포함하여 만들기 ("profile.{png}")
+    String originalFilename = image.getOriginalFilename();
+    // "whale.png" -> {"whale", "png"}
+    String[] fileNameSplit = originalFilename.split("\\.");
+    // "blue.whale.png" -> {"blue", "whale", "png"}
+    String extension = fileNameSplit[fileNameSplit.length -1];
+    String profileFilename = "profile." + extension;
+
+    String profilePath = profileDir + profileFilename;
+    log.info(profilePath);
+
+    // 3. 실제로 해당 위치에 저장
+    try {
+      image.transferTo(Path.of(profilePath));
+    } catch (IOException e) {
+      log.error(e.getMessage());
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // 4. User에 아바타 위치를 저장
+    // http://localhost:8080/static/{id}/profile.{확장자}
+    String requestPath = String.format("/static/%d/%s", id, profileFilename);
+    log.info(requestPath);
+    User target = optionalUser.get();
+    target.setAvatar(requestPath);
+
+    // 5. 응답하기
+    return UserDto.fromEntity(repository.save(target));
+  }
+```
+
+</details>
+
+<hr>
+
 `01/23`
 
-1. `thorow new ResponseStatusException();`  
+<details>
+<summary><strong>Validation</strong></summary>
+
+1. `thorow new ResponseStatusException();`
 ```java
 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -114,7 +247,7 @@ throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
 ```
 2. `@ExceptionHandler`  
-[UserController](/src/main/java/com/example/contents/UserController.java)
+   [UserController](/src/main/java/com/example/contents/UserController.java)
 ```java
  @ExceptionHandler(IllegalArgumentException.class) // 예외가 발생했을 때 반응해서 응답한다.
   @ResponseStatus(code = HttpStatus.BAD_REQUEST) // 오로지 예외가 발생했을 때 어떻게 동작할지 정의하는 메서드다.
@@ -157,7 +290,7 @@ return dto;
 }
 ```
 4. `커스텀 예외 활용하기`  
-[UserService](/src/main/java/com/example/contents/UserService.java)
+   [UserService](/src/main/java/com/example/contents/UserService.java)
 ```java
   public UserDto create(UserDto dto){
   // 사용자 생성 전 계정 이름 겹침 확인 후
@@ -210,8 +343,11 @@ return dto;
 }
 ```
 
+</details>
 
-## 복습
-~~2024.01.22 File Handling 복습 완료~~  
-~~2024.01.23 ~ 25 Validation(Exception Handling) 일부 복습 완료~~  
-~~2024.01.26 Validation(Exception Handling) 복습 완료~~
+<hr>
+
+## GitHub
+
+- 강사님 GitHub  
+[likelion-backend-8-files](https://github.com/edujeeho0/likelion-backend-8-files)
