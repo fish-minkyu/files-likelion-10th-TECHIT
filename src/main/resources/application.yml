@@ -8,7 +8,8 @@ spring:
 
     # Ex) static-path-pattern: /example/**
     # 요청: /example/assets/images/shark.png
-    # 응답: example 경로에 요청이 왔으므로 static 폴더 이하에서 해당 파일을 찾아 응답하자
+    # 응답: example 경로에 요청이 왔으므로
+    # static-location에서 지정한 폴더에서 파일을 찾아 응답하자
     static-path-pattern: /static/** # /**: 복수의 경로를 타는 요청을 의미
 
 
@@ -17,7 +18,8 @@ spring:
       # 어떤 폴더의 파일을 정적 응답으로 전달할지를 설정 (어떤 곳에서 정적 응답을 할지 설정)
 
       # file:media/
-      # : "/static"이란 요청을 받았을 때, 해당 media 폴더에 있는 파일을 찾아줘
+      # : static-path-pattern에서 지정한 "/static"으로 시작한 요청을 받았을 때,
+      # 해당 "media" 폴더에 있는 파일을 찾아줘
 
       # classpath:/static
       # : build를 했을 때, classpath를 기준으로 static 폴더 안에 있는 내용을 정적으로 제공해줘
