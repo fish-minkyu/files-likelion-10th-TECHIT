@@ -1,4 +1,4 @@
-package com.example.contents;
+package com.example.contents.Validation;
 
 import com.example.contents.dto.ErrorDto;
 import com.example.contents.exceptions.Status400Exception;

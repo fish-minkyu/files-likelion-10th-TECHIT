@@ -1,4 +1,4 @@
-package com.example.contents;
+package com.example.contents.FileIO;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -40,19 +40,20 @@ public class MultipartController {
 
     // 파일을 저장할 경로 + 파일명 지정
     // Path란 객체가 실행했을 때의 디렉토리를 기준으로 상대 경로로 위치를 지정한다.
-    Path downloadPath =Path.of("media/" + multipartFile.getOriginalFilename());
+    Path downloadPath = Path.of("media/" + multipartFile.getOriginalFilename());
 
     // 저장한다.
     multipartFile.transferTo(downloadPath); // IOException이 발생할 위험 존재하므로 에러 처리가 필요하다.
 
     /*
-    // 사용자가 업로드한 파일이 이미지인지 확인하고 싶을 때를 구현해보기(그 외 다양한 방법이 있음)
+    // 사용자가 업로드한 파일이 이미지 형식인지 확인하고 싶을 때를 구현해보기(그 외 다양한 방법이 있음)
     // 저장할 파일 이름
     File file = new File("./media/" + multipartFile.getOriginalFilename());
     try(OutputStream outputStream = new FileOutputStream(file)) {
       // byte[] 형태로 파일을 받는다.
       byte[] fileBytes = multipartFile.getBytes();
-      // TODO 이미지 파일을 구성하는 byte[]가 맞는지 확인
+
+      // 이미지 파일을 구성하는 byte[]가 맞는지 확인
       // System.out.println(new String(fileBytes, StandardCharsets.UTF_8)); // 요청한 파일 확장자가 출력됨
       outputStream.write(fileBytes); // 파일을 저장
     }

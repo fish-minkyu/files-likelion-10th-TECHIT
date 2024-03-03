@@ -1,14 +1,10 @@
-package com.example.contents;
+package com.example.contents.Validation;
 
-import com.example.contents.dto.ErrorDto;
 import com.example.contents.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Slf4j
 @RestController

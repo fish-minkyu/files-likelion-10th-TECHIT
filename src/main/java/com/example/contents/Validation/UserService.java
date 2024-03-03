@@ -1,4 +1,4 @@
-package com.example.contents;
+package com.example.contents.Validation;
 
 import com.example.contents.dto.UserDto;
 import com.example.contents.entity.User;
