@@ -1,4 +1,4 @@
-package com.example.contents.Validation;
+package com.example.contents;
 
 import com.example.contents.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,11 +1,10 @@
-package com.example.contents.Validation;
+package com.example.contents;
 
 import com.example.contents.dto.ErrorDto;
 import com.example.contents.exceptions.Status400Exception;
 import com.example.contents.exceptions.UsernameExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

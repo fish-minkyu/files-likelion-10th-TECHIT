@@ -1,4 +1,4 @@
-package com.example.contents.Validation;
+package com.example.contents;
 
 import com.example.contents.dto.UserDto;
 import lombok.RequiredArgsConstructor;
